@@ -1,0 +1,11 @@
+#!/bin/sh
+set -eu
+cd "$(dirname "$0")"
+docker compose build forticlient
+# The previous diagnostic service may still own the host SOCKS port.
+docker compose stop forticlient
+if [ -t 0 ]; then
+    exec docker compose run --rm --service-ports --name forticlient-vpn-only-session forticlient
+else
+    exec docker compose run --rm -T --service-ports --name forticlient-vpn-only-session forticlient
+fi

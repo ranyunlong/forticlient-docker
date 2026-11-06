@@ -1,0 +1,9 @@
+#!/bin/sh
+set -eu
+# This fixed, root-owned command is the only passwordless sudo entry point.
+[ "$#" -eq 0 ] || exit 2
+[ "$(id -u)" -eq 0 ] || { echo 'FortiClient backend requires root' >&2; exit 1; }
+mkdir -p /run/dbus
+dbus-uuidgen --ensure
+dbus-daemon --system --fork --nopidfile
+exec /opt/forticlient/fctsched

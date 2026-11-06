@@ -1,0 +1,12 @@
+#!/bin/sh
+set -eu
+/usr/bin/supervisord -n -c /etc/supervisor/conf.d/forticlient.conf &
+supervisor_pid=$!
+cleanup() {
+    kill "$supervisor_pid" 2>/dev/null || true
+    wait "$supervisor_pid" 2>/dev/null || true
+}
+trap cleanup EXIT
+trap 'exit 130' INT
+trap 'exit 143' TERM HUP
+/usr/local/bin/vpn-login

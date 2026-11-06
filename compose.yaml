@@ -1,0 +1,28 @@
+name: forticlient-vpn-only
+
+services:
+  forticlient:
+    platform: linux/amd64
+    image: forticlient-vpn-only:7.4.3.5411-runtime
+    build: .
+    cap_add:
+      - NET_ADMIN
+      - SYS_PTRACE
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    ports:
+      - "127.0.0.1:${SOCKS_PORT:-1081}:1080"
+    volumes:
+      - vpn-only-data:/var/lib/forticlient
+      - type: bind
+        source: ${VPN_CONFIG:-./vpn.json}
+        target: /config/vpn.json
+        read_only: true
+        bind:
+          create_host_path: false
+    tmpfs:
+      - /run/user/1000:uid=1000,gid=1000,mode=0700
+    restart: "no"
+
+volumes:
+  vpn-only-data:

@@ -1,0 +1,9 @@
+*
+!Dockerfile
+!supervisord.conf
+!start-forticlient-service
+!start-container
+!vpn_session.py
+!installers/
+installers/*
+!installers/forticlient_vpn_7.4.3.5411_amd64.deb
