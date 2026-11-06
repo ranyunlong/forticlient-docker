@@ -6,7 +6,6 @@ import fcntl
 import getpass
 import json
 import os
-from pathlib import Path
 import pty
 import re
 import select
@@ -115,6 +114,8 @@ def connect(config, token, timeout=120):
         code = process.wait(timeout=5)
         if code:
             raise RuntimeError("VPN 认证失败：\n" + redact(output, config, token))
+    except subprocess.SubprocessError:
+        raise RuntimeError("VPN 客户端进程异常，已停止本次连接") from None
     finally:
         if slave != -1:
             os.close(slave)
